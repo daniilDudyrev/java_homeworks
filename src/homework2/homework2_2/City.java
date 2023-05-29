@@ -1,4 +1,4 @@
-package homework2_2;
+package homework2.homework2_2;
 
 public class City {
     private String name;

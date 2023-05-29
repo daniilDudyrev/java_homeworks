@@ -1,4 +1,4 @@
-package homework2_1;
+package homework2.homework2_1;
 
 public class Human {
     private String name;
