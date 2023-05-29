@@ -1,4 +1,4 @@
-package homework2_5;
+package homework2.homework2_5;
 
 
 public class App {

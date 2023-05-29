@@ -1,4 +1,4 @@
-package homework2_6;
+package homework2.homework2_6;
 
 public class Car {
     private String name;
