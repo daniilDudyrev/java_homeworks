@@ -1,0 +1,68 @@
+CREATE TABLE Customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    discount DECIMAL(10, 2),
+    birthdate DATE,
+    email VARCHAR(255)
+);
+INSERT INTO Customers (name, discount, birthdate, email) VALUES
+    ('Клиент 1', 0.10, DATE '1990-01-01', 'client1@example.com'),
+    ('Клиент 2', 0.15, DATE '1985-05-10', 'client2@example.com'),
+    ('Клиент 3', 0.05, DATE '1995-12-15', 'client3@example.com');
+
+CREATE TABLE CoffeeShops (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL
+);
+
+INSERT INTO CoffeeShops (name, address) VALUES
+    ('Кофейня 1', 'Адрес 1'),
+    ('Кофейня 2', 'Адрес 2'),
+    ('Кофейня 3', 'Адрес 3');
+
+CREATE TABLE Products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    coffee_shop_id INT REFERENCES CoffeeShops(id)
+);
+
+INSERT INTO Products (name, price, coffee_shop_id) VALUES
+    ('Эспрессо', 2.50, 1),
+    ('Капучино', 3.00, 1),
+    ('Латте', 3.50, 1),
+    ('Американо', 2.00, 2),
+    ('Флэт Уайт', 3.50, 2),
+    ('Мокка', 4.00, 3),
+    ('Фраппе', 4.50, 3);
+
+
+CREATE TABLE Employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    position VARCHAR(255) NOT NULL,
+    coffee_shop_id INT REFERENCES CoffeeShops(id),
+    schedule JSONB
+);
+
+INSERT INTO Employees (name, position, coffee_shop_id, schedule) VALUES
+     ('Бариста 1', 'Бариста', 1, '{"Monday": "8:00 AM - 4:00 PM", "Tuesday": "8:00 AM - 4:00 PM", "Wednesday": "8:00 AM - 4:00 PM", "Thursday": "8:00 AM - 4:00 PM", "Friday": "8:00 AM - 4:00 PM"}'),
+     ('Бариста 2', 'Бариста', 2, '{"Monday": "9:00 AM - 5:00 PM", "Tuesday": "9:00 AM - 5:00 PM", "Wednesday": "9:00 AM - 5:00 PM", "Thursday": "9:00 AM - 5:00 PM", "Friday": "9:00 AM - 5:00 PM"}'),
+     ('Менеджер 1', 'Менеджер', 1, '{"Monday": "9:00 AM - 6:00 PM", "Tuesday": "9:00 AM - 6:00 PM", "Wednesday": "9:00 AM - 6:00 PM", "Thursday": "9:00 AM - 6:00 PM", "Friday": "9:00 AM - 6:00 PM"}');
+
+
+CREATE TABLE Orders (
+    id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES Customers(id),
+    product_id INT REFERENCES Products(id),
+    quantity INT,
+    order_date DATE NOT NULL,
+    barista_id INT REFERENCES Employees(id)
+);
+
+INSERT INTO Orders (customer_id, product_id, order_date, barista_id) VALUES
+    (1, 1, DATE '2023-06-30', 1),
+    (1, 2, DATE '2023-06-29', 2),
+    (2, 4, DATE '2023-07-05', 3),
+    (3, 6, DATE '2023-07-01', 1);

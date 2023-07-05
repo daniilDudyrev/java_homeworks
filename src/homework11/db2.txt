@@ -1,0 +1,115 @@
+-- ѕоказать минимальную скидку дл€ клиента
+SELECT MIN(discount) AS min_discount
+FROM Customers;
+
+-- ѕоказать максимальную скидку дл€ клиента
+SELECT MAX(discount) AS max_discount
+FROM Customers;
+
+-- ѕоказать клиентов с минимальной скидкой и величину скидки
+SELECT name, discount
+FROM Customers
+WHERE discount = (SELECT MIN(discount) FROM Customers);
+
+-- ѕоказать клиентов с максимальной скидкой и величину скидки
+SELECT name, discount
+FROM Customers
+WHERE discount = (SELECT MAX(discount) FROM Customers);
+
+-- ѕоказать среднюю величину скидки
+SELECT AVG(discount) AS avg_discount
+FROM Customers;
+
+
+-- ѕоказать самого молодого клиента
+SELECT *
+FROM Customers
+ORDER BY birthdate ASC
+LIMIT 1;
+
+-- ѕоказать самого возрастного клиента
+SELECT *
+FROM Customers
+ORDER BY birthdate DESC
+LIMIT 1;
+
+-- ѕоказать клиентов, у которых день рождени€ в этот день
+SELECT *
+FROM Customers
+WHERE EXTRACT(MONTH FROM birthdate) = EXTRACT(MONTH FROM CURRENT_DATE)
+  AND EXTRACT(DAY FROM birthdate) = EXTRACT(DAY FROM CURRENT_DATE);
+
+-- ѕоказать клиентов, у которых не заполнен контактный почтовый адрес
+SELECT *
+FROM Customers
+WHERE email IS NULL OR email = '';
+
+-- ѕоказать информацию о заказах в конкретную дату
+SELECT Orders.*, Customers.name AS customer_name, Employees.name AS barista_name
+FROM Orders
+         JOIN Customers ON Orders.customer_id = Customers.id
+         JOIN Employees ON Orders.barista_id = Employees.id
+WHERE Orders.order_date = DATE '2023-06-30';
+
+-- ѕоказать информацию о заказах в указанном промежутке дат
+SELECT Orders.*, Customers.name AS customer_name, Employees.name AS barista_name
+FROM Orders
+         JOIN Customers ON Orders.customer_id = Customers.id
+         JOIN Employees ON Orders.barista_id = Employees.id
+WHERE Orders.order_date BETWEEN DATE '2023-06-28' AND DATE '2023-06-30';
+
+-- ѕоказать количество заказов десертов в конкретную дату
+SELECT COUNT(*) AS dessert_orders
+FROM Orders
+         JOIN Products ON Orders.product_id = Products.id
+WHERE Orders.order_date = DATE '2023-06-30'
+  AND Products.name LIKE '%десерт%';
+
+-- ѕоказать количество заказов напитков в конкретную дату
+SELECT COUNT(*) AS beverage_orders
+FROM Orders
+         JOIN Products ON Orders.product_id = Products.id
+WHERE Orders.order_date = DATE '2023-06-30'
+  AND Products.name NOT LIKE '%десерт%';
+
+-- ѕоказать информацию о клиентах, которые заказывали напитки сегодн€.  роме информации о клиенте, нужно показать информацию о баристах, которые сделали напитки
+SELECT Orders.*, Customers.name AS customer_name, Employees.name AS barista_name
+FROM Orders
+         JOIN Customers ON Orders.customer_id = Customers.id
+         JOIN Employees ON Orders.barista_id = Employees.id
+         JOIN Products ON Orders.product_id = Products.id
+WHERE Orders.order_date = CURRENT_DATE
+  AND Products.name NOT LIKE '%десерт%';
+
+-- ѕоказать среднюю сумму заказа в конкретную дату
+SELECT AVG(Products.price * Orders.quantity) AS avg_order_amount
+FROM Orders
+         JOIN Products ON Orders.product_id = Products.id
+WHERE Orders.order_date = DATE '2023-06-30';
+
+-- ѕоказать максимальную сумму заказа в конкретную дату
+SELECT MAX(Products.price * Orders.quantity) AS max_order_amount
+FROM Orders
+         JOIN Products ON Orders.product_id = Products.id
+WHERE Orders.order_date = DATE '2023-06-30';
+
+-- ѕоказать клиента, который совершил максимальную сумму заказа в конкретную дату
+SELECT Customers.*, MAX(Products.price * Orders.quantity) AS max_order_amount
+FROM Orders
+         JOIN Products ON Orders.product_id = Products.id
+         JOIN Customers ON Orders.customer_id = Customers.id
+WHERE Orders.order_date = DATE '2023-06-30'
+GROUP BY Customers.id
+ORDER BY max_order_amount DESC
+LIMIT 1;
+
+-- ѕоказать расписание работы конкретного бариста на неделю
+SELECT schedule FROM Employees WHERE name = 'Ѕариста 1';
+
+-- ѕоказать расписание работы всех бариста на неделю
+SELECT name, schedule FROM Employees WHERE position = 'Ѕариста';
+
+-- ѕоказать расписание работы всех работников на неделю
+SELECT name, position, schedule FROM Employees;
+
+
