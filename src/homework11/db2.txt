@@ -1,99 +1,99 @@
--- Показать минимальную скидку для клиента
+-- РџРѕРєР°Р·Р°С‚СЊ РјРёРЅРёРјР°Р»СЊРЅСѓСЋ СЃРєРёРґРєСѓ РґР»СЏ РєР»РёРµРЅС‚Р°
 SELECT MIN(discount) AS min_discount
 FROM Customers;
 
--- Показать максимальную скидку для клиента
+-- РџРѕРєР°Р·Р°С‚СЊ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ СЃРєРёРґРєСѓ РґР»СЏ РєР»РёРµРЅС‚Р°
 SELECT MAX(discount) AS max_discount
 FROM Customers;
 
--- Показать клиентов с минимальной скидкой и величину скидки
+-- РџРѕРєР°Р·Р°С‚СЊ РєР»РёРµРЅС‚РѕРІ СЃ РјРёРЅРёРјР°Р»СЊРЅРѕР№ СЃРєРёРґРєРѕР№ Рё РІРµР»РёС‡РёРЅСѓ СЃРєРёРґРєРё
 SELECT name, discount
 FROM Customers
 WHERE discount = (SELECT MIN(discount) FROM Customers);
 
--- Показать клиентов с максимальной скидкой и величину скидки
+-- РџРѕРєР°Р·Р°С‚СЊ РєР»РёРµРЅС‚РѕРІ СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ СЃРєРёРґРєРѕР№ Рё РІРµР»РёС‡РёРЅСѓ СЃРєРёРґРєРё
 SELECT name, discount
 FROM Customers
 WHERE discount = (SELECT MAX(discount) FROM Customers);
 
--- Показать среднюю величину скидки
+-- РџРѕРєР°Р·Р°С‚СЊ СЃСЂРµРґРЅСЋСЋ РІРµР»РёС‡РёРЅСѓ СЃРєРёРґРєРё
 SELECT AVG(discount) AS avg_discount
 FROM Customers;
 
 
--- Показать самого молодого клиента
+-- РџРѕРєР°Р·Р°С‚СЊ СЃР°РјРѕРіРѕ РјРѕР»РѕРґРѕРіРѕ РєР»РёРµРЅС‚Р°
 SELECT *
 FROM Customers
 ORDER BY birthdate ASC
 LIMIT 1;
 
--- Показать самого возрастного клиента
+-- РџРѕРєР°Р·Р°С‚СЊ СЃР°РјРѕРіРѕ РІРѕР·СЂР°СЃС‚РЅРѕРіРѕ РєР»РёРµРЅС‚Р°
 SELECT *
 FROM Customers
 ORDER BY birthdate DESC
 LIMIT 1;
 
--- Показать клиентов, у которых день рождения в этот день
+-- РџРѕРєР°Р·Р°С‚СЊ РєР»РёРµРЅС‚РѕРІ, Сѓ РєРѕС‚РѕСЂС‹С… РґРµРЅСЊ СЂРѕР¶РґРµРЅРёСЏ РІ СЌС‚РѕС‚ РґРµРЅСЊ
 SELECT *
 FROM Customers
 WHERE EXTRACT(MONTH FROM birthdate) = EXTRACT(MONTH FROM CURRENT_DATE)
   AND EXTRACT(DAY FROM birthdate) = EXTRACT(DAY FROM CURRENT_DATE);
 
--- Показать клиентов, у которых не заполнен контактный почтовый адрес
+-- РџРѕРєР°Р·Р°С‚СЊ РєР»РёРµРЅС‚РѕРІ, Сѓ РєРѕС‚РѕСЂС‹С… РЅРµ Р·Р°РїРѕР»РЅРµРЅ РєРѕРЅС‚Р°РєС‚РЅС‹Р№ РїРѕС‡С‚РѕРІС‹Р№ Р°РґСЂРµСЃ
 SELECT *
 FROM Customers
 WHERE email IS NULL OR email = '';
 
--- Показать информацию о заказах в конкретную дату
+-- РџРѕРєР°Р·Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р·Р°РєР°Р·Р°С… РІ РєРѕРЅРєСЂРµС‚РЅСѓСЋ РґР°С‚Сѓ
 SELECT Orders.*, Customers.name AS customer_name, Employees.name AS barista_name
 FROM Orders
          JOIN Customers ON Orders.customer_id = Customers.id
          JOIN Employees ON Orders.barista_id = Employees.id
 WHERE Orders.order_date = DATE '2023-06-30';
 
--- Показать информацию о заказах в указанном промежутке дат
+-- РџРѕРєР°Р·Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р·Р°РєР°Р·Р°С… РІ СѓРєР°Р·Р°РЅРЅРѕРј РїСЂРѕРјРµР¶СѓС‚РєРµ РґР°С‚
 SELECT Orders.*, Customers.name AS customer_name, Employees.name AS barista_name
 FROM Orders
          JOIN Customers ON Orders.customer_id = Customers.id
          JOIN Employees ON Orders.barista_id = Employees.id
 WHERE Orders.order_date BETWEEN DATE '2023-06-28' AND DATE '2023-06-30';
 
--- Показать количество заказов десертов в конкретную дату
+-- РџРѕРєР°Р·Р°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РєР°Р·РѕРІ РґРµСЃРµСЂС‚РѕРІ РІ РєРѕРЅРєСЂРµС‚РЅСѓСЋ РґР°С‚Сѓ
 SELECT COUNT(*) AS dessert_orders
 FROM Orders
          JOIN Products ON Orders.product_id = Products.id
 WHERE Orders.order_date = DATE '2023-06-30'
-  AND Products.name LIKE '%десерт%';
+  AND Products.name LIKE '%РґРµСЃРµСЂС‚%';
 
--- Показать количество заказов напитков в конкретную дату
+-- РџРѕРєР°Р·Р°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РєР°Р·РѕРІ РЅР°РїРёС‚РєРѕРІ РІ РєРѕРЅРєСЂРµС‚РЅСѓСЋ РґР°С‚Сѓ
 SELECT COUNT(*) AS beverage_orders
 FROM Orders
          JOIN Products ON Orders.product_id = Products.id
 WHERE Orders.order_date = DATE '2023-06-30'
-  AND Products.name NOT LIKE '%десерт%';
+  AND Products.name NOT LIKE '%РґРµСЃРµСЂС‚%';
 
--- Показать информацию о клиентах, которые заказывали напитки сегодня. Кроме информации о клиенте, нужно показать информацию о баристах, которые сделали напитки
+-- РџРѕРєР°Р·Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєР»РёРµРЅС‚Р°С…, РєРѕС‚РѕСЂС‹Рµ Р·Р°РєР°Р·С‹РІР°Р»Рё РЅР°РїРёС‚РєРё СЃРµРіРѕРґРЅСЏ. РљСЂРѕРјРµ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РєР»РёРµРЅС‚Рµ, РЅСѓР¶РЅРѕ РїРѕРєР°Р·Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р±Р°СЂРёСЃС‚Р°С…, РєРѕС‚РѕСЂС‹Рµ СЃРґРµР»Р°Р»Рё РЅР°РїРёС‚РєРё
 SELECT Orders.*, Customers.name AS customer_name, Employees.name AS barista_name
 FROM Orders
          JOIN Customers ON Orders.customer_id = Customers.id
          JOIN Employees ON Orders.barista_id = Employees.id
          JOIN Products ON Orders.product_id = Products.id
 WHERE Orders.order_date = CURRENT_DATE
-  AND Products.name NOT LIKE '%десерт%';
+  AND Products.name NOT LIKE '%РґРµСЃРµСЂС‚%';
 
--- Показать среднюю сумму заказа в конкретную дату
+-- РџРѕРєР°Р·Р°С‚СЊ СЃСЂРµРґРЅСЋСЋ СЃСѓРјРјСѓ Р·Р°РєР°Р·Р° РІ РєРѕРЅРєСЂРµС‚РЅСѓСЋ РґР°С‚Сѓ
 SELECT AVG(Products.price * Orders.quantity) AS avg_order_amount
 FROM Orders
          JOIN Products ON Orders.product_id = Products.id
 WHERE Orders.order_date = DATE '2023-06-30';
 
--- Показать максимальную сумму заказа в конкретную дату
+-- РџРѕРєР°Р·Р°С‚СЊ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ СЃСѓРјРјСѓ Р·Р°РєР°Р·Р° РІ РєРѕРЅРєСЂРµС‚РЅСѓСЋ РґР°С‚Сѓ
 SELECT MAX(Products.price * Orders.quantity) AS max_order_amount
 FROM Orders
          JOIN Products ON Orders.product_id = Products.id
 WHERE Orders.order_date = DATE '2023-06-30';
 
--- Показать клиента, который совершил максимальную сумму заказа в конкретную дату
+-- РџРѕРєР°Р·Р°С‚СЊ РєР»РёРµРЅС‚Р°, РєРѕС‚РѕСЂС‹Р№ СЃРѕРІРµСЂС€РёР» РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ СЃСѓРјРјСѓ Р·Р°РєР°Р·Р° РІ РєРѕРЅРєСЂРµС‚РЅСѓСЋ РґР°С‚Сѓ
 SELECT Customers.*, MAX(Products.price * Orders.quantity) AS max_order_amount
 FROM Orders
          JOIN Products ON Orders.product_id = Products.id
@@ -103,13 +103,14 @@ GROUP BY Customers.id
 ORDER BY max_order_amount DESC
 LIMIT 1;
 
--- Показать расписание работы конкретного бариста на неделю
-SELECT schedule FROM Employees WHERE name = 'Бариста 1';
+-- РџРѕРєР°Р·Р°С‚СЊ СЂР°СЃРїРёСЃР°РЅРёРµ СЂР°Р±РѕС‚С‹ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ Р±Р°СЂРёСЃС‚Р° РЅР° РЅРµРґРµР»СЋ
+SELECT schedule FROM Employees WHERE name = 'Р‘Р°СЂРёСЃС‚Р° 1';
 
--- Показать расписание работы всех бариста на неделю
-SELECT name, schedule FROM Employees WHERE position = 'Бариста';
+-- РџРѕРєР°Р·Р°С‚СЊ СЂР°СЃРїРёСЃР°РЅРёРµ СЂР°Р±РѕС‚С‹ РІСЃРµС… Р±Р°СЂРёСЃС‚Р° РЅР° РЅРµРґРµР»СЋ
+SELECT name, schedule FROM Employees WHERE position = 'Р‘Р°СЂРёСЃС‚Р°';
 
--- Показать расписание работы всех работников на неделю
+-- РџРѕРєР°Р·Р°С‚СЊ СЂР°СЃРїРёСЃР°РЅРёРµ СЂР°Р±РѕС‚С‹ РІСЃРµС… СЂР°Р±РѕС‚РЅРёРєРѕРІ РЅР° РЅРµРґРµР»СЋ
 SELECT name, position, schedule FROM Employees;
+
 
 
